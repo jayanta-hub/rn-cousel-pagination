@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {scale} from '../../../Infrastructure/utils/screenUtility';
+import {scale} from '../../infrastructure/utils/screenUtility';
 
 const Pagination = ({renderData, activeIndex, scrollX}) => {
   const {width} = useWindowDimensions();
@@ -21,8 +21,7 @@ const Pagination = ({renderData, activeIndex, scrollX}) => {
         }}>
         {renderData.length > 0
           ? renderData.map((_, index) => {
-              {
-                /* const inputRange = [
+              const inputRange = [
                 (index - 1) * width,
                 index * width,
                 (index + 1) * width,
@@ -36,18 +35,17 @@ const Pagination = ({renderData, activeIndex, scrollX}) => {
                 inputRange,
                 outputRange: [0.3, 1, 0.3],
                 extrapolate: 'clamp',
-              }); */
-              }
+              });
               return (
                 <Animated.View
                   key={index.toString()}
                   style={{
-                    width: scale(6),
+                    width: dotWidth,
                     height: scale(6),
                     borderRadius: scale(3),
-                    backgroundColor: '#10A0DA',
+                    backgroundColor: '#146C94',
                     marginHorizontal: scale(5),
-                    opacity: index === activeIndex ? 1 : 0.3,
+                    opacity: opacity,
                   }}
                 />
               );
