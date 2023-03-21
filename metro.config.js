@@ -8,7 +8,6 @@ module.exports = {
     }),
   },
 };
-
 const {getDefaultConfig} = require('metro-config');
 
 module.exports = (async () => {

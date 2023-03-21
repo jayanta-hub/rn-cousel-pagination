@@ -1,6 +1,6 @@
 import {FlatList, Text, View, Image, Animated} from 'react-native';
-import React, {useRef, useState} from 'react';
-import LOGOSVG from '../../infrastructure/assets/image/airoplane.svg';
+import React, {useRef, useState, createRef, useEffect} from 'react';
+// import LOGOSVG from '../../infrastructure/assets/image/airoplane.svg';
 import img0 from '../../infrastructure/assets/image/00000.jpeg';
 import img1 from '../../infrastructure/assets/image/11111.jpeg';
 import img2 from '../../infrastructure/assets/image/22222.jpeg';
@@ -8,6 +8,8 @@ import img3 from '../../infrastructure/assets/image/33333.jpeg';
 import img4 from '../../infrastructure/assets/image/55555.jpeg';
 import {scale, width} from '../../infrastructure/utils/screenUtility';
 import Pagination from '../Pagination/Pagination';
+import NextButton from '../NextButton/NextButton';
+
 const Onbording = () => {
   const data = [
     {
@@ -37,19 +39,41 @@ const Onbording = () => {
     },
     {
       id: 4,
-      title: 'asccasc',
+      title: 'Browny',
       description: 'This is something.',
       image: img4,
     },
   ];
+  let CurrentSlide = 0;
+  let IntervalTime = 2000;
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesref = useRef(null);
-
+  const slidesref = useRef();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [timerId, setTimerId] = useState('');
   const viewableItemChange = useRef(({viewableItems}) => {
     setActiveIndex(viewableItems(0).index);
   }).current;
   const viewConfig = useRef({viewAreaCoveragePercentThreshold: 50}).current;
+
+  const goToNextPage = () => {
+    if (CurrentSlide >= data.length - 1) CurrentSlide = -1;
+    slidesref?.current?.scrollToIndex({
+      index: ++CurrentSlide,
+      animated: true,
+    });
+  };
+
+  const startAutoPlay = () => {
+    setTimerId(setInterval(goToNextPage, IntervalTime));
+  };
+
+  const stopAutoPlay = () => {
+    if (timerId) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
+  };
+
   const renderItem = ({item}) => {
     return (
       <>
@@ -110,6 +134,14 @@ const Onbording = () => {
       </>
     );
   };
+  useEffect(() => {
+    startAutoPlay();
+    stopAutoPlay();
+    return () => {
+      stopAutoPlay();
+    };
+  }, []);
+
   return (
     <>
       <View style={{flex: 1}}>
@@ -134,18 +166,24 @@ const Onbording = () => {
             [{nativeEvent: {contentOffset: {x: scrollX}}}],
             {useNativeDriver: false},
           )}
-          ref={slidesref}
           viewableItemChange={viewableItemChange}
           viewConfig={viewConfig}
+          flatListRef={React.createRef()}
+          ref={slidesref}
+          snapToAlignment="center"
+          // snapToInterval={height}
+          // scrollEventThrottle={36}
+          // decelerationRate="fast"
         />
-      </View>
-      <View style={{flex: 0.1}}>
+        {/* <View style={{flex: 0.1}}> */}
         <Pagination
           renderData={data}
           activeIndex={activeIndex}
           scrollX={scrollX}
         />
+        {/* </View> */}
       </View>
+      <View style={{flex: 0.1}}>{/* <NextButton /> */}</View>
     </>
   );
 };
