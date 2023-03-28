@@ -62,7 +62,7 @@ const Onbording = () => {
       animated: true,
     });
   };
-
+  console.log('first', (activeIndex + 1) * (100 / data.length));
   const startAutoPlay = () => {
     setTimerId(setInterval(goToNextPage, IntervalTime));
   };
@@ -134,13 +134,13 @@ const Onbording = () => {
       </>
     );
   };
-  useEffect(() => {
-    startAutoPlay();
-    stopAutoPlay();
-    return () => {
-      stopAutoPlay();
-    };
-  }, []);
+  // useEffect(() => {
+  //   startAutoPlay();
+  //   stopAutoPlay();
+  //   return () => {
+  //     stopAutoPlay();
+  //   };
+  // }, []);
 
   return (
     <>
@@ -153,11 +153,12 @@ const Onbording = () => {
         />
       </View> */}
         <FlatList
+          ref={slidesref}
           data={data}
           renderItem={renderItem}
           keyExtractor={item => item._id}
-          onEndReachedThreshold={32}
-          horizontal={true}
+          onEndReachedThreshold={36}
+          horizontal
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           pagingEnabled
@@ -169,21 +170,22 @@ const Onbording = () => {
           viewableItemChange={viewableItemChange}
           viewConfig={viewConfig}
           flatListRef={React.createRef()}
-          ref={slidesref}
           snapToAlignment="center"
           // snapToInterval={height}
           // scrollEventThrottle={36}
           // decelerationRate="fast"
         />
-        {/* <View style={{flex: 0.1}}> */}
-        <Pagination
-          renderData={data}
-          activeIndex={activeIndex}
-          scrollX={scrollX}
-        />
-        {/* </View> */}
+        <View style={{flex: 0.1}}>
+          <Pagination
+            renderData={data}
+            activeIndex={activeIndex}
+            scrollX={scrollX}
+          />
+        </View>
       </View>
-      <View style={{flex: 0.1}}>{/* <NextButton /> */}</View>
+      <View style={{flex: 0.3}}>
+        <NextButton percentage={(activeIndex + 1) * (100 / data.length)} />
+      </View>
     </>
   );
 };
